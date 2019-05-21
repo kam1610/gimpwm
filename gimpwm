@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+wmconf= {};
+wmconf['ツールボックス'             ]=[[  31,   0,  52,  565], [1920,   0,  52,  565]];
+wmconf['ツールオプション - レイヤー']=[[1712,   0, 200, 1173], [3632,   0, 200, 1173]];
+wmconf['パレットエディター'         ]=[[1504, 210, 200,  240], [3428, 210, 200,  240]];
+wmconf['ナビゲーション'             ]=[[1504,   0, 200,  183], [3424,   0, 200,  183]];
+
+wclist= `wmctrl -lG`;
+
+cix= 0;
+if( ARGV[0] != nil )
+  cix= ARGV[0].to_i;
+end
+
+wclist.each_line(){|l|
+  l= l.strip();
+  wmconf.keys.each(){|k|
+    if (l =~ /^(0x[0-9a-f]+) .*#{k}$/)
+      wid= $~[1];
+      wx = wmconf[k][cix][0];
+      wy = wmconf[k][cix][1];
+      ww = wmconf[k][cix][2];
+      wh = wmconf[k][cix][3];
+      cmd= "wmctrl -i -r #{wid} -e 0,#{wx},#{wy},#{ww},#{wh}"
+      `#{cmd}`;
+    end
+  }
+}
